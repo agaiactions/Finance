@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agai Actions · 05 · Финансы</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#f5f0e8;--cream2:#ede8de;--cream3:#e4ddd1;
+  --ink:#1a1612;--ink2:#2e2820;--ink3:#3d3529;
+  --gold:#9a7340;--gold-l:#c9a96e;--gold-d:#b8965a;
+  --text:#2a2218;--muted:#6a5e52;--border:rgba(154,115,64,0.2);
+  --green:#2d7a5a;--red:#b03030;--blue:#2d5a8a;--white:#faf8f4;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;line-height:1.6;}
+.header{background:var(--ink);border-bottom:1px solid rgba(201,169,110,0.2);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.header-brand{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--gold-l);}
+.header-sub{font-size:10px;color:#666;letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.badge{background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.3);border-radius:20px;padding:5px 14px;font-size:10px;color:var(--gold-l);letter-spacing:1.5px;text-transform:uppercase;}
+.tabs{display:flex;background:var(--ink2);border-bottom:1px solid rgba(201,169,110,0.15);overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{padding:12px 16px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#888;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;font-weight:500;}
+.tab:hover{color:#ccc;}
+.tab.active{color:var(--gold-l);border-bottom-color:var(--gold-l);}
+.hero{background:var(--ink);padding:48px 24px 36px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(201,169,110,0.08) 0%,transparent 70%);pointer-events:none;}
+.hero-num{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-d);margin-bottom:14px;}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,7vw,52px);font-weight:400;color:#f0ebe0;line-height:1.1;margin-bottom:12px;}
+.hero-title em{font-style:italic;color:var(--gold-l);}
+.hero-desc{font-size:13px;color:#999;max-width:460px;margin:0 auto;line-height:1.8;}
+.panel{display:none;max-width:700px;margin:0 auto;padding:24px 20px 80px;}
+.panel.active{display:block;}
+.section{margin-bottom:12px;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--white);}
+.section-header{background:var(--cream2);padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid var(--border);}
+.section-num{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;color:var(--gold);min-width:28px;line-height:1;}
+.section-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--ink);flex:1;}
+.section-arrow{font-size:11px;color:var(--gold);transition:transform .3s;}
+.section-arrow.open{transform:rotate(90deg);}
+.section-body{padding:18px;background:var(--white);}
+.note{background:rgba(154,115,64,0.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 14px;margin:10px 0;font-size:13px;color:var(--ink);line-height:1.7;}
+.note strong{font-weight:600;}
+.principle{display:flex;gap:14px;padding:14px 16px;background:var(--cream2);border-radius:8px;margin-bottom:8px;border-left:3px solid var(--gold);}
+.principle-num{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold);line-height:1;min-width:24px;}
+.principle-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.principle-text{font-size:12px;color:var(--muted);line-height:1.65;}
+.big-stat{background:var(--ink);border-radius:12px;padding:22px 20px;text-align:center;margin-bottom:10px;}
+.big-num{font-family:'Playfair Display',serif;font-size:clamp(36px,8vw,52px);font-weight:400;color:var(--gold-l);line-height:1;margin-bottom:6px;}
+.big-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#888;}
+.big-sub{font-size:12px;color:#666;margin-top:6px;}
+.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+.stat{background:var(--cream2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.stat-num{font-family:'Playfair Display',serif;font-size:24px;font-weight:400;color:var(--gold);line-height:1;margin-bottom:4px;}
+.stat-label{font-size:10px;color:var(--muted);letter-spacing:.5px;}
+/* UNIT ECONOMICS */
+.ue-card{border-radius:10px;padding:16px 18px;margin-bottom:10px;}
+.ue-a{background:rgba(45,122,90,0.05);border:1px solid rgba(45,122,90,0.25);}
+.ue-b{background:rgba(45,90,138,0.05);border:1px solid rgba(45,90,138,0.2);}
+.ue-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-weight:600;}
+.ue-a .ue-label{color:var(--green);}
+.ue-b .ue-label{color:var(--blue);}
+.ue-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--ink);margin-bottom:12px;}
+.ue-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:12px;}
+.ue-row:last-child{border-bottom:none;}
+.ue-k{color:var(--muted);}
+.ue-v{font-weight:600;color:var(--ink);}
+.ue-total{display:flex;justify-content:space-between;padding:10px 0;font-size:13px;font-weight:600;border-top:2px solid rgba(0,0,0,0.1);margin-top:6px;}
+.ue-profit{font-family:'Playfair Display',serif;font-size:22px;}
+.ue-a .ue-profit{color:var(--green);}
+.ue-b .ue-profit{color:var(--blue);}
+/* COMPARISON TABLE */
+.ctable{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px;}
+.ctable th{background:var(--ink);color:var(--gold-l);padding:10px 12px;text-align:left;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;}
+.ctable td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--ink3);}
+.ctable tr:last-child td{border-bottom:none;}
+.ctable tr:hover td{background:rgba(154,115,64,0.03);}
+.ctable td:first-child{color:var(--ink);font-weight:500;}
+.green-val{color:var(--green);font-weight:700;}
+.blue-val{color:var(--blue);font-weight:700;}
+/* SCALE */
+.scale-stage{background:var(--cream2);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;}
+.scale-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.scale-icon{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold);min-width:36px;line-height:1;}
+.scale-title-wrap{}
+.scale-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);font-weight:600;}
+.scale-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--ink);}
+.scenarios{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+.scen{border-radius:8px;padding:12px;text-align:center;}
+.scen-all-a{background:rgba(45,122,90,0.08);border:1px solid rgba(45,122,90,0.2);}
+.scen-mix{background:rgba(154,115,64,0.07);border:1px solid rgba(154,115,64,0.2);}
+.scen-all-b{background:rgba(45,90,138,0.07);border:1px solid rgba(45,90,138,0.2);}
+.scen-tag{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;margin-bottom:5px;}
+.scen-all-a .scen-tag{color:var(--green);}
+.scen-mix .scen-tag{color:var(--gold-d);}
+.scen-all-b .scen-tag{color:var(--blue);}
+.scen-rev{font-size:10px;color:var(--muted);margin-bottom:3px;}
+.scen-profit{font-family:'Playfair Display',serif;font-size:17px;}
+.scen-all-a .scen-profit{color:var(--green);}
+.scen-mix .scen-profit{color:var(--gold);}
+.scen-all-b .scen-profit{color:var(--blue);}
+/* BUDGET */
+.budget-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.budget-row:last-child{border-bottom:none;}
+.budget-label{color:var(--ink3);}
+.budget-val{font-weight:600;color:var(--ink);}
+.budget-total{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--ink);border-radius:8px;margin-top:10px;}
+.budget-total-label{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#888;}
+.budget-total-val{font-family:'Playfair Display',serif;font-size:26px;color:var(--gold-l);}
+/* RISK */
+.risk{background:rgba(176,48,48,0.05);border:1px solid rgba(176,48,48,0.15);border-radius:8px;padding:14px 16px;margin-bottom:8px;display:flex;gap:14px;}
+.risk-num{font-family:'Playfair Display',serif;font-size:22px;color:var(--red);min-width:24px;}
+.risk-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.risk-text{font-size:12px;color:var(--muted);line-height:1.6;}
+/* GOLDEN */
+.golden{background:var(--ink);border-radius:12px;padding:22px;margin-top:16px;}
+.golden-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold-l);margin-bottom:16px;font-style:italic;}
+.checklist{list-style:none;}
+.checklist li{font-size:13px;color:var(--ink);padding:8px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px;line-height:1.6;}
+.checklist li:last-child{border-bottom:none;}
+.checklist li::before{content:'✓';color:var(--green);font-size:11px;margin-top:3px;flex-shrink:0;font-weight:700;}
+.golden .checklist li{color:#ddd;border-bottom-color:rgba(255,255,255,0.08);}
+.golden .checklist li::before{color:var(--gold-l)!important;}
+#scrollTop{display:none;position:fixed;bottom:24px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--ink);border:1px solid var(--gold-d);color:var(--gold-l);font-size:18px;cursor:pointer;z-index:999;box-shadow:0 2px 12px rgba(0,0,0,0.2);}
+@media(max-width:600px){
+  .stat-row,.scenarios{grid-template-columns:1fr;}
+  .ctable{font-size:11px;}
+  .ctable th,.ctable td{padding:8px 8px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div><div class="header-brand">Agai Actions</div><div class="header-sub">Brand Intelligence HQ</div></div>
+  <div class="badge">05 · Финансы</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showPanel('unit',this)">Unit Economics</div>
+  <div class="tab" onclick="showPanel('salary',this)">Оклад модель</div>
+  <div class="tab" onclick="showPanel('scale',this)">Масштаб</div>
+  <div class="tab" onclick="showPanel('budget',this)">Бюджет</div>
+  <div class="tab" onclick="showPanel('hiring',this)">Найм</div>
+  <div class="tab" onclick="showPanel('risks',this)">Риски</div>
+</div>
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="hero">
+  <div class="hero-num">Блок 05 · Финансовая модель</div>
+  <h1 class="hero-title">Numbers —<br><em>Реальная экономика</em></h1>
+  <p class="hero-desc">Unit economics на проект, модель масштабирования 15→30→45 работ, бюджет и стратегия найма.</p>
+</div>
+
+<!-- ===== UNIT ECONOMICS ===== -->
+<div class="panel active" id="panel-unit">
+
+  <div class="note"><strong>Входные данные:</strong> обои $132 закупка / $187 продажа · бригада $900/день (установщик $375 + подготовщик $375 + хелпер $150) · CAC $80 · 1 бригада = 15–20 проектов/месяц.</div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">A</div><div class="section-title">Проект 500 sq.ft · 2 дня</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div class="ue-card ue-a">
+        <div class="ue-label">Тип A · Крупный проект</div>
+        <div class="ue-title">500 sq.ft · 2 рабочих дня</div>
+
+        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:600;">Выручка</div>
+        <div class="ue-row"><div class="ue-k">Работы</div><div class="ue-v">$4,000</div></div>
+        <div class="ue-row"><div class="ue-k">Обои (10 × $187)</div><div class="ue-v">$1,870</div></div>
+        <div class="ue-total"><div>Итого выручка</div><div>$5,870</div></div>
+
+        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:14px 0 8px;font-weight:600;">Затраты</div>
+        <div class="ue-row"><div class="ue-k">Бригада (2 дня × $900)</div><div class="ue-v">$1,800</div></div>
+        <div class="ue-row"><div class="ue-k">Обои закупка (10 × $132)</div><div class="ue-v">$1,320</div></div>
+        <div class="ue-row"><div class="ue-k">Расходники</div><div class="ue-v">$200</div></div>
+        <div class="ue-row"><div class="ue-k">Переделки (10% от работ)</div><div class="ue-v">$400</div></div>
+        <div class="ue-row"><div class="ue-k">CAC</div><div class="ue-v">$80</div></div>
+        <div class="ue-total"><div>Итого затраты</div><div>$3,800</div></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
+          <div style="background:rgba(45,122,90,0.1);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-size:10px;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Прибыль</div>
+            <div class="ue-profit">$2,070</div>
+          </div>
+          <div style="background:rgba(45,122,90,0.06);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-size:10px;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Маржа</div>
+            <div class="ue-profit">35%</div>
+          </div>
+        </div>
+        <div style="background:rgba(45,122,90,0.06);border-radius:6px;padding:8px 12px;margin-top:8px;text-align:center;font-size:11px;color:var(--muted);">Прибыль в день: <strong style="color:var(--green);">~$1,035</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">B</div><div class="section-title">Проект 300 sq.ft · 1 день</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div class="ue-card ue-b">
+        <div class="ue-label">Тип B · Малый проект</div>
+        <div class="ue-title">300 sq.ft · 1 рабочий день</div>
+
+        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:600;">Выручка</div>
+        <div class="ue-row"><div class="ue-k">Работы</div><div class="ue-v">$2,400</div></div>
+        <div class="ue-row"><div class="ue-k">Обои (10 × $187)</div><div class="ue-v">$1,870</div></div>
+        <div class="ue-total"><div>Итого выручка</div><div>$4,270</div></div>
+
+        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:14px 0 8px;font-weight:600;">Затраты</div>
+        <div class="ue-row"><div class="ue-k">Бригада (1 день × $900)</div><div class="ue-v">$900</div></div>
+        <div class="ue-row"><div class="ue-k">Обои закупка (10 × $132)</div><div class="ue-v">$1,320</div></div>
+        <div class="ue-row"><div class="ue-k">Расходники</div><div class="ue-v">$150</div></div>
+        <div class="ue-row"><div class="ue-k">Переделки (10% от работ)</div><div class="ue-v">$240</div></div>
+        <div class="ue-row"><div class="ue-k">CAC</div><div class="ue-v">$80</div></div>
+        <div class="ue-total"><div>Итого затраты</div><div>$2,690</div></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
+          <div style="background:rgba(45,90,138,0.1);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-size:10px;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Прибыль</div>
+            <div class="ue-profit">$1,580</div>
+          </div>
+          <div style="background:rgba(45,90,138,0.06);border-radius:8px;padding:12px;text-align:center;">
+            <div style="font-size:10px;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Маржа</div>
+            <div class="ue-profit">37%</div>
+          </div>
+        </div>
+        <div style="background:rgba(45,90,138,0.06);border-radius:6px;padding:8px 12px;margin-top:8px;text-align:center;font-size:11px;color:var(--muted);">Прибыль в день: <strong style="color:var(--blue);">$1,580</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">≠</div><div class="section-title">Сравнение сценариев</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <table class="ctable">
+        <tr><th>Показатель</th><th>500 sq.ft</th><th>300 sq.ft</th></tr>
+        <tr><td>Дней на проект</td><td>2</td><td>1</td></tr>
+        <tr><td>Выручка</td><td>$5,870</td><td>$4,270</td></tr>
+        <tr><td>Затраты</td><td>$3,800</td><td>$2,690</td></tr>
+        <tr><td>Прибыль / проект</td><td class="green-val">$2,070</td><td class="blue-val">$1,580</td></tr>
+        <tr><td>Прибыль / день</td><td>$1,035</td><td class="blue-val">$1,580 ↑</td></tr>
+        <tr><td>Маржа</td><td>35%</td><td>37%</td></tr>
+        <tr><td>Проектов / бригада / мес</td><td>~11</td><td class="blue-val">~20 ↑</td></tr>
+      </table>
+      <div class="note"><strong>Вывод:</strong> малые проекты эффективнее по времени ($1,580/день vs $1,035/день). Крупные — дают больше денег за сделку и меньше нагрузки на маркетинг. Оптимальная модель — смешанная. Ключевой драйвер — работы, а не обои.</div>
+      <div style="background:rgba(154,115,64,0.06);border:1px solid rgba(154,115,64,0.2);border-radius:8px;padding:12px 14px;margin-top:10px;">
+        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;font-weight:600;">Вклад обоев в прибыль</div>
+        <div style="font-size:12px;color:var(--ink3);line-height:1.8;">Обои дают ~$550 доп. прибыли с проекта (10 рул × $55 маржа). Это ~25–30% общей прибыли — стабильный дополнительный доход при каждой продаже.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== SALARY MODEL ===== -->
+<div class="panel" id="panel-salary">
+
+  <div class="note"><strong>Оклад модель:</strong> бригада на фиксированной зарплате. Установщик $6K + Подготовщик $6K + Хелпер $3K + Менеджер $6K = <strong>$21,000/мес</strong>. Расходы на труд не привязаны к проекту — они фиксированные.</div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">1</div><div class="section-title">Валовая прибыль с проекта (без зарплат)</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div class="ue-card ue-a" style="margin-bottom:0;">
+          <div class="ue-label">500 sq.ft · валовая</div>
+          <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;">
+            <div class="ue-row"><div class="ue-k">Выручка</div><div class="ue-v">$5,870</div></div>
+            <div class="ue-row"><div class="ue-k">Обои (закупка)</div><div class="ue-v">−$1,320</div></div>
+            <div class="ue-row"><div class="ue-k">Расходники</div><div class="ue-v">−$200</div></div>
+            <div class="ue-row"><div class="ue-k">Переделки</div><div class="ue-v">−$400</div></div>
+            <div class="ue-row"><div class="ue-k">CAC</div><div class="ue-v">−$80</div></div>
+          </div>
+          <div style="background:rgba(45,122,90,0.12);border-radius:6px;padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--green);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;">Валовая прибыль</div>
+            <div style="font-family:'Playfair Display',serif;font-size:24px;color:var(--green);">$3,870</div>
+            <div style="font-size:10px;color:var(--muted);">66% маржа</div>
+          </div>
+        </div>
+        <div class="ue-card ue-b" style="margin-bottom:0;">
+          <div class="ue-label">300 sq.ft · валовая</div>
+          <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;">
+            <div class="ue-row"><div class="ue-k">Выручка</div><div class="ue-v">$4,270</div></div>
+            <div class="ue-row"><div class="ue-k">Обои (закупка)</div><div class="ue-v">−$1,320</div></div>
+            <div class="ue-row"><div class="ue-k">Расходники</div><div class="ue-v">−$150</div></div>
+            <div class="ue-row"><div class="ue-k">Переделки</div><div class="ue-v">−$240</div></div>
+            <div class="ue-row"><div class="ue-k">CAC</div><div class="ue-v">−$80</div></div>
+          </div>
+          <div style="background:rgba(45,90,138,0.1);border-radius:6px;padding:10px;text-align:center;">
+            <div style="font-size:9px;color:var(--blue);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;">Валовая прибыль</div>
+            <div style="font-family:'Playfair Display',serif;font-size:24px;color:var(--blue);">$2,480</div>
+            <div style="font-size:10px;color:var(--muted);">58% маржа</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">2</div><div class="section-title">Фиксированные расходы · 1 бригада на окладе</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div style="background:rgba(154,115,64,0.05);border:1px solid rgba(154,115,64,0.2);border-radius:8px;padding:14px 16px;margin-bottom:10px;">
+        <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);margin-bottom:10px;font-weight:600;">Зарплаты команды · $21,000</div>
+        <div class="budget-row"><div class="budget-label">Установщик</div><div class="budget-val">$6,000</div></div>
+        <div class="budget-row"><div class="budget-label">Подготовщик</div><div class="budget-val">$6,000</div></div>
+        <div class="budget-row"><div class="budget-label">Хелпер</div><div class="budget-val">$3,000</div></div>
+        <div class="budget-row" style="border-bottom:none;"><div class="budget-label">Менеджер</div><div class="budget-val">$6,000</div></div>
+      </div>
+      <div class="budget-row"><div class="budget-label">🚗 Машина</div><div class="budget-val">$1,800</div></div>
+      <div class="budget-row"><div class="budget-label">📱 Маркетинг</div><div class="budget-val">$5,000</div></div>
+      <div class="budget-row"><div class="budget-label">🎬 Контент</div><div class="budget-val">$4,000</div></div>
+      <div class="budget-row"><div class="budget-label">💻 CRM / Софт / Бухгалтерия</div><div class="budget-val">$2,000</div></div>
+      <div class="budget-row"><div class="budget-label">⛽ Бензин</div><div class="budget-val">$3,000</div></div>
+      <div class="budget-row"><div class="budget-label">🎨 Образцы</div><div class="budget-val">$2,000</div></div>
+      <div class="budget-total">
+        <div class="budget-total-label">Итого фикс. расходов</div>
+        <div class="budget-total-val">$38,800</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">3</div><div class="section-title">Чистая прибыль по этапам · оклад модель</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div class="note" style="margin-bottom:14px;">Чистая прибыль = Валовая прибыль с проектов − Фиксированные расходы (зарплаты + оверхед).</div>
+
+      <!-- 15 projects -->
+      <div style="margin-bottom:14px;">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);font-weight:600;margin-bottom:8px;">Этап 1 · 15 проектов · 1 бригада · фикс. $38,800</div>
+        <div class="scenarios">
+          <div class="scen scen-all-a">
+            <div class="scen-tag">Все 500 sqft</div>
+            <div class="scen-rev">Валовая $58,050</div>
+            <div class="scen-profit">$19,250</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px;">чистая</div>
+          </div>
+          <div class="scen scen-mix">
+            <div class="scen-tag">Микс 50/50</div>
+            <div class="scen-rev">Валовая $46,875</div>
+            <div class="scen-profit">$8,075</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px;">чистая</div>
+          </div>
+          <div class="scen scen-all-b">
+            <div class="scen-tag">Все 300 sqft</div>
+            <div class="scen-rev">Валовая $37,200</div>
+            <div style="font-family:'Playfair Display',serif;font-size:17px;color:var(--red);">−$1,600</div>
+            <div style="font-size:9px;color:var(--red);margin-top:2px;">убыток</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 30 projects -->
+      <div style="margin-bottom:14px;">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--green);font-weight:600;margin-bottom:8px;">Этап 2 · 30 проектов · 2 бригады · фикс. $64,600</div>
+        <div class="scenarios">
+          <div class="scen scen-all-a">
+            <div class="scen-tag">Все 500 sqft</div>
+            <div class="scen-rev">Валовая $116,100</div>
+            <div class="scen-profit">$51,500</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px;">чистая</div>
+          </div>
+          <div class="scen scen-mix">
+            <div class="scen-tag">Микс 50/50</div>
+            <div class="scen-rev">Валовая $95,250</div>
+            <div class="scen-profit">$30,650</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px;">чистая</div>
+          </div>
+          <div class="scen scen-all-b">
+            <div class="scen-tag">Все 300 sqft</div>
+            <div class="scen-rev">Валовая $74,400</div>
+            <div class="scen-profit">$9,800</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px;">чистая</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 45 projects -->
+      <div>
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-l);font-weight:600;margin-bottom:8px;">Этап 3 · 45 проектов · 3 бригады · фикс. $90,400</div>
+        <div class="scenarios">
+          <div class="scen scen-all-a">
+            <div class="scen-tag">Все 500 sqft</div>
+            <div class="scen-rev">Валовая $174,150</div>
+            <div class="scen-profit">$83,750</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px;">чистая</div>
+          </div>
+          <div class="scen scen-mix">
+            <div class="scen-tag">Микс 50/50</div>
+            <div class="scen-rev">Валовая $139,700</div>
+            <div class="scen-profit">$49,300</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px;">чистая</div>
+          </div>
+          <div class="scen scen-all-b">
+            <div class="scen-tag">Все 300 sqft</div>
+            <div class="scen-rev">Валовая $111,600</div>
+            <div class="scen-profit">$21,200</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px;">чистая</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note" style="margin-top:14px;"><strong>Ключевой вывод оклад-модели:</strong> при 15 проектах на окладе бизнес выходит в плюс только при крупных проектах (500 sqft). При всех малых — убыток $1,600. Оклады оправданы только при стабильном потоке 20+ проектов или акценте на крупные проекты.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">4</div><div class="section-title">Сдельно vs Оклад · детальное сравнение</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div class="note" style="margin-bottom:14px;"><strong>Сдельно:</strong> бригада получает $900/день только когда работает. <strong>Оклад:</strong> бригада получает $15,000/мес независимо от загрузки. Менеджер $6,000 — в обоих случаях оклад.</div>
+
+      <!-- Per project comparison -->
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);font-weight:600;margin-bottom:10px;">На уровне одного проекта</div>
+
+      <table class="ctable" style="margin-bottom:16px;">
+        <tr><th>Показатель</th><th>Сдельно</th><th>Оклад</th><th>Разница</th></tr>
+        <tr>
+          <td colspan="4" style="background:rgba(45,122,90,0.05);font-weight:600;color:var(--green);padding:8px 12px;font-size:11px;letter-spacing:1px;">500 sq.ft · 2 дня</td>
+        </tr>
+        <tr><td>Выручка</td><td>$5,870</td><td>$5,870</td><td>—</td></tr>
+        <tr><td>Затраты на труд</td><td style="color:var(--red);">$1,800</td><td style="color:var(--green);">$0 (в фиксе)</td><td class="green-val">+$1,800</td></tr>
+        <tr><td>Прочие затраты</td><td>$2,000</td><td>$2,000</td><td>—</td></tr>
+        <tr><td>Прибыль / проект</td><td class="green-val">$2,070</td><td class="green-val">$3,870</td><td class="green-val">+$1,800</td></tr>
+        <tr><td>Маржа</td><td>35%</td><td>66%</td><td>+31 п.п.</td></tr>
+        <tr>
+          <td colspan="4" style="background:rgba(45,90,138,0.05);font-weight:600;color:var(--blue);padding:8px 12px;font-size:11px;letter-spacing:1px;">300 sq.ft · 1 день</td>
+        </tr>
+        <tr><td>Выручка</td><td>$4,270</td><td>$4,270</td><td>—</td></tr>
+        <tr><td>Затраты на труд</td><td style="color:var(--red);">$900</td><td style="color:var(--green);">$0 (в фиксе)</td><td class="green-val">+$900</td></tr>
+        <tr><td>Прочие затраты</td><td>$1,790</td><td>$1,790</td><td>—</td></tr>
+        <tr><td>Прибыль / проект</td><td class="blue-val">$1,580</td><td class="blue-val">$2,480</td><td class="green-val">+$900</td></tr>
+        <tr><td>Маржа</td><td>37%</td><td>58%</td><td>+21 п.п.</td></tr>
+      </table>
+
+      <!-- Monthly comparison -->
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);font-weight:600;margin-bottom:10px;">На уровне месяца · 15 проектов (8×500 + 7×300)</div>
+
+      <table class="ctable" style="margin-bottom:14px;">
+        <tr><th>Показатель</th><th>Сдельно</th><th>Оклад</th></tr>
+        <tr><td>Прибыль с проектов</td><td>$27,620</td><td>$48,320</td></tr>
+        <tr><td>Зарплата бригады</td><td style="color:var(--red);">−$13,800 (сдельно)</td><td style="color:var(--red);">−$15,000 (фикс)</td></tr>
+        <tr><td>Менеджер + оверхед</td><td style="color:var(--red);">−$23,800</td><td style="color:var(--red);">−$23,800</td></tr>
+        <tr><td><strong>Чистая прибыль</strong></td><td class="green-val"><strong>$3,820</strong></td><td class="green-val"><strong>$9,520</strong></td></tr>
+      </table>
+
+      <!-- Risk of downtime -->
+      <div style="background:rgba(176,48,48,0.05);border:1px solid rgba(176,48,48,0.2);border-radius:10px;padding:14px 16px;margin-bottom:12px;">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:10px;font-weight:600;">⚠️ Риск простоя · оклад модель</div>
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:8px;">Если поток падает с 15 до 10 проектов (6×500 + 4×300):</div>
+        <table class="ctable">
+          <tr><th>Модель</th><th>Прибыль с проектов</th><th>Фикс. расходы</th><th>Чистая</th></tr>
+          <tr><td>Сдельно</td><td>$18,220</td><td>$23,800</td><td style="color:var(--red);">−$5,580</td></tr>
+          <tr><td>Оклад</td><td>$32,120</td><td>$38,800</td><td style="color:var(--red);">−$6,680</td></tr>
+        </table>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.7;">При простое убыток в оклад-модели больше: бригада получает $15,000 независимо от загрузки.</div>
+      </div>
+
+      <div style="background:rgba(154,115,64,0.06);border:1px solid rgba(154,115,64,0.2);border-radius:10px;padding:14px 16px;">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-d);margin-bottom:10px;font-weight:600;">Когда что выгоднее</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="background:rgba(45,122,90,0.06);border:1px solid rgba(45,122,90,0.15);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--green);font-weight:600;margin-bottom:6px;">✓ Оклад выгоднее когда</div>
+            <div style="font-size:11px;color:var(--ink3);line-height:1.8;">Стабильный поток 20+ проектов · высокая загрузка бригады · много крупных проектов · нужна лояльность и предсказуемость команды</div>
+          </div>
+          <div style="background:rgba(45,90,138,0.06);border:1px solid rgba(45,90,138,0.15);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--blue);font-weight:600;margin-bottom:6px;">✓ Сдельно выгоднее когда</div>
+            <div style="font-size:11px;color:var(--ink3);line-height:1.8;">Нестабильный поток · много малых проектов · старт бизнеса · нет уверенности в загрузке · нужна гибкость</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== SCALE ===== -->
+<div class="panel" id="panel-scale">
+
+  <div class="note"><strong>1 бригада = 15–20 проектов/месяц</strong> в зависимости от типа проектов. Модель строится по 15 → 30 → 45 проектов с соответствующим количеством бригад.</div>
+
+  <!-- STAGE 1 -->
+  <div class="scale-stage">
+    <div class="scale-header">
+      <div class="scale-icon">1</div>
+      <div class="scale-title-wrap">
+        <div class="scale-label">Этап 1 · База · 1 бригада</div>
+        <div class="scale-title">15 проектов / месяц</div>
+      </div>
+    </div>
+    <div class="scenarios">
+      <div class="scen scen-all-a">
+        <div class="scen-tag">Все 500 sqft</div>
+        <div class="scen-rev">Выручка $88K</div>
+        <div class="scen-profit">$31,050</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px;">прибыль/мес</div>
+      </div>
+      <div class="scen scen-mix">
+        <div class="scen-tag">Микс 50/50</div>
+        <div class="scen-rev">Выручка $76K</div>
+        <div class="scen-profit">$27,375</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px;">прибыль/мес</div>
+      </div>
+      <div class="scen scen-all-b">
+        <div class="scen-tag">Все 300 sqft</div>
+        <div class="scen-rev">Выручка $64K</div>
+        <div class="scen-profit">$23,700</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px;">прибыль/мес</div>
+      </div>
+    </div>
+    <div style="background:rgba(45,122,90,0.06);border-radius:6px;padding:8px 12px;margin-top:10px;font-size:11px;color:var(--muted);">⚠️ 15 проектов — это <strong style="color:var(--ink);">11 крупных</strong> (по 2 дня) или <strong style="color:var(--ink);">20 малых</strong> (по 1 дню) для 1 бригады при 22 рабочих днях.</div>
+  </div>
+
+  <!-- STAGE 2 -->
+  <div class="scale-stage" style="border-color:rgba(45,122,90,0.3);">
+    <div class="scale-header">
+      <div class="scale-icon" style="color:var(--green);">2</div>
+      <div class="scale-title-wrap">
+        <div class="scale-label">Этап 2 · Рост · 2 бригады</div>
+        <div class="scale-title">30 проектов / месяц</div>
+      </div>
+    </div>
+    <div class="scenarios">
+      <div class="scen scen-all-a">
+        <div class="scen-tag">Все 500 sqft</div>
+        <div class="scen-rev">Выручка $176K</div>
+        <div class="scen-profit">$62,100</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px;">прибыль/мес</div>
+      </div>
+      <div class="scen scen-mix">
+        <div class="scen-tag">Микс 50/50</div>
+        <div class="scen-rev">Выручка $152K</div>
+        <div class="scen-profit">$54,750</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px;">прибыль/мес</div>
+      </div>
+      <div class="scen scen-all-b">
+        <div class="scen-tag">Все 300 sqft</div>
+        <div class="scen-rev">Выручка $128K</div>
+        <div class="scen-profit">$47,400</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px;">прибыль/мес</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 3 -->
+  <div class="scale-stage" style="border-color:var(--gold);">
+    <div class="scale-header">
+      <div class="scale-icon" style="color:var(--gold-l);">3</div>
+      <div class="scale-title-wrap">
+        <div class="scale-label">Этап 3 · Масштаб · 3 бригады</div>
+        <div class="scale-title">45 проектов / месяц</div>
+      </div>
+    </div>
+    <div class="scenarios">
+      <div class="scen scen-all-a">
+        <div class="scen-tag">Все 500 sqft</div>
+        <div class="scen-rev">Выручка $264K</div>
+        <div class="scen-profit">$93,150</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px;">прибыль/мес</div>
+      </div>
+      <div class="scen scen-mix">
+        <div class="scen-tag">Микс 50/50</div>
+        <div class="scen-rev">Выручка $223K</div>
+        <div class="scen-profit">$80,300</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px;">прибыль/мес</div>
+      </div>
+      <div class="scen scen-all-b">
+        <div class="scen-tag">Все 300 sqft</div>
+        <div class="scen-rev">Выручка $192K</div>
+        <div class="scen-profit">$71,100</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px;">прибыль/мес</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:4px;"><strong>Важно:</strong> эти цифры — прибыль с проектов до вычета фиксированных расходов бизнеса (маркетинг, CRM, офис и т.д.). Чистая прибыль будет ниже — см. вкладку Бюджет.</div>
+
+</div>
+
+<!-- ===== BUDGET ===== -->
+<div class="panel" id="panel-budget">
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">1</div><div class="section-title">Фиксированные расходы бизнеса · сдельная модель</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div class="note" style="margin-bottom:12px;">Зарплаты бригады включены в unit economics каждого проекта (сдельно). Здесь — только фиксированные расходы, включая менеджера на окладе.</div>
+      <div class="budget-row"><div class="budget-label">👤 Менеджер (оклад)</div><div class="budget-val">$6,000</div></div>
+      <div class="budget-row"><div class="budget-label">🚗 Машина (1 авто)</div><div class="budget-val">$1,800</div></div>
+      <div class="budget-row"><div class="budget-label">📱 Маркетинг</div><div class="budget-val">$5,000</div></div>
+      <div class="budget-row"><div class="budget-label">🎬 Контент</div><div class="budget-val">$4,000</div></div>
+      <div class="budget-row"><div class="budget-label">💻 CRM / Софт / Бухгалтерия</div><div class="budget-val">$2,000</div></div>
+      <div class="budget-row"><div class="budget-label">⛽ Бензин</div><div class="budget-val">$3,000</div></div>
+      <div class="budget-row"><div class="budget-label">🎨 Образцы</div><div class="budget-val">$2,000</div></div>
+      <div class="budget-total">
+        <div class="budget-total-label">Фикс. расходы / мес</div>
+        <div class="budget-total-val">$23,800</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">2</div><div class="section-title">Чистая прибыль после фиксированных расходов</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <table class="ctable">
+        <tr><th>Этап</th><th>Проекты</th><th>Прибыль (микс)</th><th>Фикс. расходы</th><th>Чистая прибыль</th></tr>
+        <tr><td>1 бригада</td><td>15</td><td>$27,375</td><td>$23,800</td><td class="green-val">~$3,575</td></tr>
+        <tr><td>2 бригады</td><td>30</td><td>$54,750</td><td>$34,000</td><td class="green-val">~$20,750</td></tr>
+        <tr><td>3 бригады</td><td>45</td><td>$80,300</td><td>$44,200</td><td class="green-val">~$36,100</td></tr>
+      </table>
+      <div class="note"><strong>Фиксированные расходы растут при добавлении бригад:</strong> +$1,800 авто + ~$3,000 бензин за каждую бригаду. Маркетинг и контент — примерно те же при масштабе.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">3</div><div class="section-title">Влияние микса на чистую прибыль · 15 проектов</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div style="display:grid;gap:6px;">
+        <div style="background:rgba(45,122,90,0.06);border:1px solid rgba(45,122,90,0.2);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:12px;color:var(--ink3);">Все 500 sq.ft (11 проектов реально)</div>
+          <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--green);">~$13,250</div>
+        </div>
+        <div style="background:rgba(154,115,64,0.06);border:1px solid rgba(154,115,64,0.2);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:12px;color:var(--ink3);">Микс 50/50</div>
+          <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);">~$9,600</div>
+        </div>
+        <div style="background:rgba(45,90,138,0.06);border:1px solid rgba(45,90,138,0.2);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:12px;color:var(--ink3);">Все 300 sq.ft (20 проектов реально)</div>
+          <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--blue);">~$13,900</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== HIRING ===== -->
+<div class="panel" id="panel-hiring">
+
+  <div class="note"><strong>Правило найма:</strong> масштабировать команду только под реальный поток. Ранний найм = фиксированные расходы без гарантии дохода.</div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">1</div><div class="section-title">До 15 проектов · старт</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div class="principle"><div class="principle-num">→</div><div><div class="principle-title">1 бригада</div><div class="principle-text">Установщик ($375/день) + подготовщик ($375/день) + хелпер ($150/день). Итого $900/день.</div></div></div>
+      <div class="principle"><div class="principle-num">→</div><div><div class="principle-title">Дизайнер — внештатный</div><div class="principle-text">На проекты Пакета 1. Не в штат пока нет стабильного потока.</div></div></div>
+      <div class="principle"><div class="principle-num">→</div><div><div class="principle-title">Менеджер по продажам — основатели</div><div class="principle-text">Рахман и Арам ведут продажи сами до выхода на стабильный поток 15+ проектов.</div></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">2</div><div class="section-title">15–30 проектов · рост</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div class="principle"><div class="principle-num">→</div><div><div class="principle-title">2 бригады</div><div class="principle-text">Удваиваем производственную мощность. +$1,800 авто + $3,000 бензин.</div></div></div>
+      <div class="principle"><div class="principle-num">→</div><div><div class="principle-title">Дизайнер — в штат</div><div class="principle-text">При стабильном потоке 20+ проектов дизайнер в штате окупается.</div></div></div>
+      <div class="principle"><div class="principle-num">→</div><div><div class="principle-title">Менеджер продаж — нанять</div><div class="principle-text">Освобождает основателей от операционных продаж. Критично для роста.</div></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">3</div><div class="section-title">30–45 проектов · масштаб</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div class="principle"><div class="principle-num">→</div><div><div class="principle-title">3 бригады</div><div class="principle-text">Полный операционный масштаб. 3 авто, отдел продаж, системный процесс.</div></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">→</div><div class="section-title">Автопарк · по мере роста</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+        <div style="background:var(--cream2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);">$1,800</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px;">1 машина / мес</div>
+        </div>
+        <div style="background:var(--cream2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);">$3,600</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px;">2 машины / мес</div>
+        </div>
+        <div style="background:var(--cream2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);">$5,400</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px;">3 машины / мес</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="golden">
+    <div class="golden-title">Финансовая дисциплина</div>
+    <ul class="checklist golden">
+      <li>Считать прибыль каждого проекта отдельно</li>
+      <li>Контролировать микс — оптимально совмещать 500 и 300 sq.ft</li>
+      <li>Продавать обои — дополнительные $550 с каждого проекта</li>
+      <li>Не раздувать расходы до стабильного потока</li>
+      <li>Нанимать только под реальный подтверждённый поток заказов</li>
+      <li>Минимизировать переделки — они съедают до 10% выручки</li>
+      <li>Удерживать цену работ — не демпинговать</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ===== RISKS ===== -->
+<div class="panel" id="panel-risks">
+
+  <div class="risk">
+    <div class="risk-num">1</div>
+    <div><div class="risk-title">Недостаток заказов</div><div class="risk-text">Главный риск. Без стабильного потока фиксированные расходы делают бизнес убыточным. Решение: системный маркетинг, Instagram, Google, рефералы.</div></div>
+  </div>
+  <div class="risk">
+    <div class="risk-num">2</div>
+    <div><div class="risk-title">Рост стоимости лидов (CAC)</div><div class="risk-text">CAC $80 — текущая базовая. Рост конкуренции или изменения алгоритмов могут её поднять. Решение: диверсификация каналов, органика, рефералы.</div></div>
+  </div>
+  <div class="risk">
+    <div class="risk-num">3</div>
+    <div><div class="risk-title">Рост переделок</div><div class="risk-text">Переделки заложены как 10% от работ. Если качество падает или сложность проектов растёт — это съедает прибыль. Решение: стандарты установки, обучение.</div></div>
+  </div>
+  <div class="risk">
+    <div class="risk-num">4</div>
+    <div><div class="risk-title">Простой бригад</div><div class="risk-text">Неравномерный поток заказов = оплата бригады без выручки. Решение: гибкий график, минимальный гарантированный объём или оплата по факту.</div></div>
+  </div>
+  <div class="risk">
+    <div class="risk-num">5</div>
+    <div><div class="risk-title">Ранний найм</div><div class="risk-text">Добавление бригады без подтверждённого потока = фиксированные расходы без гарантии дохода. Решение: нанимать только под реальный спрос.</div></div>
+  </div>
+
+  <div class="section" style="margin-top:14px;">
+    <div class="section-header" onclick="toggle(this)"><div class="section-num">→</div><div class="section-title">Главный вывод</div><div class="section-arrow open">▶</div></div>
+    <div class="section-body">
+      <div style="background:rgba(154,115,64,0.06);border:1px solid rgba(154,115,64,0.2);border-radius:10px;padding:18px;text-align:center;">
+        <div style="font-family:'Playfair Display',serif;font-size:16px;color:var(--ink);line-height:1.8;">Прибыль бизнеса определяется<br><em style="color:var(--gold);">эффективностью использования времени бригады</em><br>и контролем затрат.<br><br>Ключевая задача: <em style="color:var(--gold);">стабилизировать поток</em><br>и <em style="color:var(--gold);">увеличивать средний чек</em>.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showPanel(name,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggle(header){
+  const body=header.nextElementSibling;
+  const arrow=header.querySelector('.section-arrow');
+  const isOpen=body.style.display!=='none';
+  body.style.display=isOpen?'none':'block';
+  arrow.classList.toggle('open',!isOpen);
+}
+window.addEventListener('scroll',function(){
+  const btn=document.getElementById('scrollTop');
+  if(btn) btn.style.display=window.scrollY>300?'block':'none';
+});
+document.querySelectorAll('.section-body').forEach(b=>b.style.display='block');
+document.querySelectorAll('.section-arrow').forEach(a=>a.classList.add('open'));
+</script>
+</body>
+</html>
